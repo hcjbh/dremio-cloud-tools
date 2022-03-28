@@ -23,6 +23,10 @@ spec:
         dremio-configmap/checksum: {{ (tpl ($.Files.Glob "config/*").AsConfig $) | sha256sum }}
         {{- include "dremio.coordinator.podAnnotations" $ | nindent 8 }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- include "dremio.coordinator.serviceAccount" $ | nindent 6 }}
       terminationGracePeriodSeconds: 120
       {{- include "dremio.coordinator.nodeSelector" $ | nindent 6 }}
@@ -175,5 +179,4 @@ spec:
             path: tls.crt
       {{- end }}
       {{- include "dremio.coordinator.extraVolumes" $ | nindent 6 }}
-      {{- include "dremio.imagePullSecrets" $ | nindent 6}}
 {{- end -}}
